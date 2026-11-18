@@ -11,6 +11,7 @@ import '../../services/whatsapp_service.dart';
 import '../../shared/widgets/axion_breadcrumb.dart';
 import '../../shared/widgets/axion_buttons.dart';
 import '../../shared/widgets/axion_product_card.dart';
+import '../../shared/widgets/axion_scroll_reveal.dart';
 import '../../shared/widgets/axion_section_header.dart';
 import '../../state/cart_controller.dart';
 import '../../state/favorites_controller.dart';
@@ -100,21 +101,26 @@ class FavoritesPage extends StatelessWidget {
                     spacing: spacing,
                     runSpacing: spacing,
                     children: [
-                      for (final product in favoriteProducts)
+                      for (int i = 0; i < favoriteProducts.length; i++)
                         SizedBox(
                           width: width,
-                          child: AxionProductCard(
-                            product: product,
-                            isArabic: isArabic,
-                            isFavorite: true,
-                            onTap: () => context.go('/product/${product.id}'),
-                            onFavoriteToggle: () =>
-                                favoritesController.toggle(product.id),
-                            onAddToCart: () =>
-                                cartController.addItem(product.id),
-                            onWhatsAppOrder: () =>
-                                WhatsAppService.openDirectInquiry(
+                          child: AxionScrollReveal(
+                            delay: Duration(milliseconds: 45 * (i % 4)),
+                            offsetY: 16,
+                            child: AxionProductCard(
+                              product: favoriteProducts[i],
                               isArabic: isArabic,
+                              isFavorite: true,
+                              onTap: () => context
+                                  .go('/product/${favoriteProducts[i].id}'),
+                              onFavoriteToggle: () => favoritesController
+                                  .toggle(favoriteProducts[i].id),
+                              onAddToCart: () => cartController
+                                  .addItem(favoriteProducts[i].id),
+                              onWhatsAppOrder: () =>
+                                  WhatsAppService.openDirectInquiry(
+                                isArabic: isArabic,
+                              ),
                             ),
                           ),
                         ),

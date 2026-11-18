@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:go_router/go_router.dart';
@@ -50,6 +51,14 @@ class _AxionDigitalAppState extends State<AxionDigitalApp> {
         return MaterialApp.router(
           title: AppConfig.brandName,
           debugShowCheckedModeBanner: false,
+          scrollBehavior: const MaterialScrollBehavior().copyWith(
+            dragDevices: const {
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.touch,
+              PointerDeviceKind.trackpad,
+              PointerDeviceKind.stylus,
+            },
+          ),
           theme: AppTheme.build(isArabic: isArabic),
           locale: widget.localeController.locale,
           supportedLocales: const [

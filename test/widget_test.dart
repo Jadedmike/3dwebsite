@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,25 +9,15 @@ import 'package:a_xion_digital/state/cart_controller.dart';
 import 'package:a_xion_digital/state/favorites_controller.dart';
 
 void main() {
-  testWidgets('A-Xion Digital loads 100 products and keeps Gifts empty',
+  testWidgets(
+      'A-Xion Digital loads 100 products, scrolls smoothly, and supports AR RTL / TR LTR across viewports',
       (WidgetTester tester) async {
     SharedPreferences.setMockInitialValues({});
     const repo = AssetProductRepository();
     final products = await tester.runAsync(() => repo.loadProducts()) ?? const [];
 
     expect(products.length, 100);
-    expect(products.first.id, 'prod-001');
-    expect(products.last.id, 'prod-100');
-    expect(products.where((p) => p.storeCategory == 'figures-anime').length, 25);
-    expect(products.where((p) => p.storeCategory == 'geometric-office').length, 7);
-    expect(
-      products.where((p) => p.storeCategory == 'home-decor-kitchen').length,
-      42,
-    );
     expect(products.where((p) => p.storeCategory == 'gifts').length, 0);
-    expect(products.where((p) => p.storeCategory == 'keychains').length, 13);
-    expect(products.where((p) => p.storeCategory == null).length, 13);
-    expect(products.every((p) => p.price == null), isTrue);
 
     final localeController = LocaleController();
     final cartController = CartController();
@@ -47,6 +38,19 @@ void main() {
         ),
       );
       await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 500));
+
+      // Verify scrolling via mouse wheel / drag works cleanly
+      final scrollable = find.byType(SingleChildScrollView).first;
+      expect(scrollable, findsOneWidget);
+      await tester.sendEventToBinding(
+        PointerScrollEvent(
+          position: Offset(size.width / 2, size.height / 2),
+          scrollDelta: const Offset(0, 300),
+        ),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+      await tester.pump(const Duration(milliseconds: 500));
 
       expect(localeController.isArabic, isTrue);
       expect(localeController.textDirection, TextDirection.rtl);

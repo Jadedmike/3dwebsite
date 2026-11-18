@@ -11,6 +11,7 @@ import '../../services/whatsapp_service.dart';
 import '../../shared/widgets/axion_breadcrumb.dart';
 import '../../shared/widgets/axion_buttons.dart';
 import '../../shared/widgets/axion_image_slot.dart';
+import '../../shared/widgets/axion_scroll_reveal.dart';
 import '../../shared/widgets/axion_section_header.dart';
 import '../../state/cart_controller.dart';
 
@@ -92,14 +93,18 @@ class CartPage extends StatelessWidget {
             ],
           );
 
-    final summaryPanel = _OrderSummaryCard(
-      isArabic: isArabic,
-      strings: strings,
-      totalCount: cartController.totalCount,
-      onCheckout: () => WhatsAppService.openCartCheckout(
-        items: items,
-        productMap: productMap,
+    final summaryPanel = AxionScrollReveal(
+      offsetY: 14,
+      delay: const Duration(milliseconds: 60),
+      child: _OrderSummaryCard(
         isArabic: isArabic,
+        strings: strings,
+        totalCount: cartController.totalCount,
+        onCheckout: () => WhatsAppService.openCartCheckout(
+          items: items,
+          productMap: productMap,
+          isArabic: isArabic,
+        ),
       ),
     );
 

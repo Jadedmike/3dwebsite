@@ -75,6 +75,7 @@ void main() {
         await Future<void>.delayed(const Duration(milliseconds: 80));
       });
       await tester.pump(const Duration(milliseconds: 50));
+      await tester.pump(const Duration(milliseconds: 500));
 
       await expectLater(
         find.byType(AxionDigitalApp),

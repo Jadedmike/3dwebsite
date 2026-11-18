@@ -31,6 +31,19 @@ class AxionImageSlot extends StatelessWidget {
             ? Image.asset(
                 assetPath!,
                 fit: BoxFit.cover,
+                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                  final disableAnimations =
+                      MediaQuery.maybeDisableAnimationsOf(context) ?? false;
+                  if (wasSynchronouslyLoaded || disableAnimations) {
+                    return child;
+                  }
+                  return AnimatedOpacity(
+                    opacity: frame == null ? 0.0 : 1.0,
+                    duration: const Duration(milliseconds: 360),
+                    curve: Curves.easeOutCubic,
+                    child: child,
+                  );
+                },
                 errorBuilder: (_, _, _) => const SizedBox.expand(),
               )
             : const SizedBox.expand(),

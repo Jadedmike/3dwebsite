@@ -11,6 +11,7 @@ import '../../services/whatsapp_service.dart';
 import '../../shared/widgets/axion_breadcrumb.dart';
 import '../../shared/widgets/axion_buttons.dart';
 import '../../shared/widgets/axion_image_slot.dart';
+import '../../shared/widgets/axion_scroll_reveal.dart';
 import '../../state/cart_controller.dart';
 import '../../state/favorites_controller.dart';
 
@@ -47,13 +48,19 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     final isDesktop = Breakpoints.isDesktop(context);
     final product = widget.product;
 
-    final gallery = _GalleryColumn(
-      imagePaths: product?.imagePaths ?? const [],
-      selectedIndex: _selectedImageIndex,
-      onSelect: (idx) => setState(() => _selectedImageIndex = idx),
+    final gallery = AxionScrollReveal(
+      offsetY: 14,
+      child: _GalleryColumn(
+        imagePaths: product?.imagePaths ?? const [],
+        selectedIndex: _selectedImageIndex,
+        onSelect: (idx) => setState(() => _selectedImageIndex = idx),
+      ),
     );
 
-    final details = _DetailsColumn(
+    final details = AxionScrollReveal(
+      offsetY: 14,
+      delay: const Duration(milliseconds: 60),
+      child: _DetailsColumn(
       isArabic: isArabic,
       strings: strings,
       product: product,
@@ -81,6 +88,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               quantity: _quantity,
             )
           : WhatsAppService.openDirectInquiry(isArabic: isArabic),
+      ),
     );
 
     return Padding(

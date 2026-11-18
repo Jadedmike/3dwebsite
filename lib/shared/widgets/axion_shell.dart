@@ -13,6 +13,7 @@ import 'axion_footer.dart';
 import 'axion_header.dart';
 import 'axion_logo.dart';
 import 'axion_mascots.dart';
+import 'axion_scroll_reveal.dart';
 
 /// Shared page shell ensuring every route uses the exact same Header, Footer,
 /// RTL/LTR directionality, Drawer navigation, and floating WhatsApp FAB.
@@ -36,6 +37,21 @@ class AxionShell extends StatefulWidget {
 
 class _AxionShellState extends State<AxionShell> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void didUpdateWidget(covariant AxionShell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.body != oldWidget.body && _scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,23 +110,34 @@ class _AxionShellState extends State<AxionShell> {
                   Expanded(
                     child: Stack(
                       children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              widget.body,
-                              AxionFooter(
-                                localeController: widget.localeController,
-                                onHomeTap: () => context.go('/'),
-                                onAllProductsTap: () => context.go('/products'),
-                                onCategoryTap: (cat) =>
-                                    context.go('/category/${cat.slug}'),
-                                onWhatsAppTap: () =>
-                                    WhatsAppService.openDirectInquiry(
-                                  isArabic: isArabic,
-                                ),
+                        AxionScrollScope(
+                          controller: _scrollController,
+                          child: Scrollbar(
+                            controller: _scrollController,
+                            child: SingleChildScrollView(
+                              controller: _scrollController,
+                              physics: const ClampingScrollPhysics(
+                                parent: AlwaysScrollableScrollPhysics(),
                               ),
-                            ],
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  widget.body,
+                                  AxionFooter(
+                                    localeController: widget.localeController,
+                                    onHomeTap: () => context.go('/'),
+                                    onAllProductsTap: () =>
+                                        context.go('/products'),
+                                    onCategoryTap: (cat) =>
+                                        context.go('/category/${cat.slug}'),
+                                    onWhatsAppTap: () =>
+                                        WhatsAppService.openDirectInquiry(
+                                      isArabic: isArabic,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
                         if (!isDesktop)

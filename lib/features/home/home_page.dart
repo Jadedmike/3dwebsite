@@ -11,6 +11,7 @@ import '../../services/whatsapp_service.dart';
 import '../../shared/widgets/axion_buttons.dart';
 import '../../shared/widgets/axion_image_slot.dart';
 import '../../shared/widgets/axion_product_card.dart';
+import '../../shared/widgets/axion_scroll_reveal.dart';
 import '../../shared/widgets/axion_section_header.dart';
 import '../../state/cart_controller.dart';
 import '../../state/favorites_controller.dart';
@@ -45,7 +46,9 @@ class HomePage extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 24, bottom: 24),
           child: MaxWidthContainer(
-            child: Container(
+            child: AxionScrollReveal(
+              offsetY: 12,
+              child: Container(
               decoration: BoxDecoration(
                 color: AppColors.cardBackground,
                 borderRadius: BorderRadius.circular(AppTokens.radiusXl),
@@ -95,6 +98,7 @@ class HomePage extends StatelessWidget {
                       ],
                     ),
             ),
+            ),
           ),
         ),
 
@@ -125,14 +129,19 @@ class HomePage extends StatelessWidget {
                       spacing: spacing,
                       runSpacing: spacing,
                       children: [
-                        for (final cat in StoreCategory.values)
+                        for (int i = 0; i < StoreCategory.values.length; i++)
                           SizedBox(
                             width: itemWidth,
-                            child: _CategoryShowcaseCard(
-                              category: cat,
-                              isArabic: isArabic,
-                              strings: strings,
-                              onTap: () => context.go('/category/${cat.slug}'),
+                            child: AxionScrollReveal(
+                              delay: Duration(milliseconds: 45 * i),
+                              offsetY: 12,
+                              child: _CategoryShowcaseCard(
+                                category: StoreCategory.values[i],
+                                isArabic: isArabic,
+                                strings: strings,
+                                onTap: () => context.go(
+                                    '/category/${StoreCategory.values[i].slug}'),
+                              ),
                             ),
                           ),
                       ],
@@ -283,13 +292,17 @@ class HomePage extends StatelessWidget {
                         for (int i = 0; i < steps.length; i++)
                           SizedBox(
                             width: width,
-                            child: _WhatsAppStepCard(
-                              stepNumber: '${i + 1}',
-                              title: steps[i].$1,
-                              description: steps[i].$2,
-                              badgeBg: steps[i].$3,
-                              badgeFg: steps[i].$4,
-                              isArabic: isArabic,
+                            child: AxionScrollReveal(
+                              delay: Duration(milliseconds: 55 * i),
+                              offsetY: 14,
+                              child: _WhatsAppStepCard(
+                                stepNumber: '${i + 1}',
+                                title: steps[i].$1,
+                                description: steps[i].$2,
+                                badgeBg: steps[i].$3,
+                                badgeFg: steps[i].$4,
+                                isArabic: isArabic,
+                              ),
                             ),
                           ),
                       ],
@@ -725,18 +738,23 @@ class _ProductGrid extends StatelessWidget {
           spacing: spacing,
           runSpacing: spacing,
           children: [
-            for (final product in products)
+            for (int i = 0; i < products.length; i++)
               SizedBox(
                 width: width,
-                child: AxionProductCard(
-                  product: product,
-                  isArabic: isArabic,
-                  isFavorite: favoritesController.isFavorite(product.id),
-                  onTap: () => context.go('/product/${product.id}'),
-                  onFavoriteToggle: () => favoritesController.toggle(product.id),
-                  onAddToCart: () => cartController.addItem(product.id),
-                  onWhatsAppOrder: () =>
-                      WhatsAppService.openDirectInquiry(isArabic: isArabic),
+                child: AxionScrollReveal(
+                  delay: Duration(milliseconds: 45 * (i % 4)),
+                  offsetY: 16,
+                  child: AxionProductCard(
+                    product: products[i],
+                    isArabic: isArabic,
+                    isFavorite: favoritesController.isFavorite(products[i].id),
+                    onTap: () => context.go('/product/${products[i].id}'),
+                    onFavoriteToggle: () =>
+                        favoritesController.toggle(products[i].id),
+                    onAddToCart: () => cartController.addItem(products[i].id),
+                    onWhatsAppOrder: () =>
+                        WhatsAppService.openDirectInquiry(isArabic: isArabic),
+                  ),
                 ),
               ),
           ],

@@ -11,6 +11,7 @@ import '../../services/whatsapp_service.dart';
 import '../../shared/widgets/axion_breadcrumb.dart';
 import '../../shared/widgets/axion_buttons.dart';
 import '../../shared/widgets/axion_product_card.dart';
+import '../../shared/widgets/axion_scroll_reveal.dart';
 import '../../shared/widgets/axion_section_header.dart';
 import '../../state/cart_controller.dart';
 import '../../state/favorites_controller.dart';
@@ -113,23 +114,28 @@ class CatalogPage extends StatelessWidget {
                     spacing: spacing,
                     runSpacing: spacing,
                     children: [
-                      for (final product in filteredProducts)
+                      for (int i = 0; i < filteredProducts.length; i++)
                         SizedBox(
                           width: width,
-                          child: AxionProductCard(
-                            product: product,
-                            isArabic: isArabic,
-                            isFavorite:
-                                favoritesController.isFavorite(product.id),
-                            onTap: () => context.go('/product/${product.id}'),
-                            onFavoriteToggle: () =>
-                                favoritesController.toggle(product.id),
-                            onAddToCart: () =>
-                                cartController.addItem(product.id),
-                            onWhatsAppOrder: () =>
-                                WhatsAppService.openProductInquiry(
-                              product: product,
+                          child: AxionScrollReveal(
+                            delay: Duration(milliseconds: 45 * (i % 4)),
+                            offsetY: 16,
+                            child: AxionProductCard(
+                              product: filteredProducts[i],
                               isArabic: isArabic,
+                              isFavorite: favoritesController
+                                  .isFavorite(filteredProducts[i].id),
+                              onTap: () => context
+                                  .go('/product/${filteredProducts[i].id}'),
+                              onFavoriteToggle: () => favoritesController
+                                  .toggle(filteredProducts[i].id),
+                              onAddToCart: () => cartController
+                                  .addItem(filteredProducts[i].id),
+                              onWhatsAppOrder: () =>
+                                  WhatsAppService.openProductInquiry(
+                                product: filteredProducts[i],
+                                isArabic: isArabic,
+                              ),
                             ),
                           ),
                         ),
@@ -141,7 +147,9 @@ class CatalogPage extends StatelessWidget {
             const SizedBox(height: 36),
 
             // Bottom Custom STL / WhatsApp Banner (deep purple-charcoal gradient from Stitch 78ddc0a4)
-            Container(
+            AxionScrollReveal(
+              offsetY: 14,
+              child: Container(
               padding: const EdgeInsets.all(28),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
@@ -176,6 +184,7 @@ class CatalogPage extends StatelessWidget {
                         WhatsAppService.openDirectInquiry(isArabic: isArabic),
                   ),
                 ],
+              ),
               ),
             ),
           ],

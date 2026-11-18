@@ -3,6 +3,7 @@ import '../../core/responsive/breakpoints.dart';
 import '../../core/theme/app_colors.dart';
 import '../../core/theme/app_tokens.dart';
 import '../../core/theme/app_typography.dart';
+import 'axion_scroll_reveal.dart';
 
 /// Consistent editorial section header matching Stitch c5f4ae8c4c5043b2aa1fbb78e4105b85.
 class AxionSectionHeader extends StatelessWidget {
@@ -51,23 +52,30 @@ class AxionSectionHeader extends StatelessWidget {
           ),
           const SizedBox(height: 10),
         ],
-        Text(
-          title,
-          style: AppTypography.headlineStyle(
-            isArabic: isArabic,
-            fontSize: isMobile ? 24 : 30,
-            fontWeight: FontWeight.w700,
-            color: AppColors.charcoal,
+        AxionScrollReveal(
+          offsetY: 12,
+          child: Text(
+            title,
+            style: AppTypography.headlineStyle(
+              isArabic: isArabic,
+              fontSize: isMobile ? 24 : 30,
+              fontWeight: FontWeight.w700,
+              color: AppColors.charcoal,
+            ),
           ),
         ),
         if (subtitle != null) ...[
           const SizedBox(height: 6),
-          Text(
-            subtitle!,
-            style: AppTypography.bodyStyle(
-              isArabic: isArabic,
-              fontSize: 14,
-              color: AppColors.charcoalMuted,
+          AxionScrollReveal(
+            offsetY: 0,
+            delay: const Duration(milliseconds: 60),
+            child: Text(
+              subtitle!,
+              style: AppTypography.bodyStyle(
+                isArabic: isArabic,
+                fontSize: 14,
+                color: AppColors.charcoalMuted,
+              ),
             ),
           ),
         ],
